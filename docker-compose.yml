@@ -28,13 +28,13 @@ services:
       # JWT Configuration
       - JWT_SECRET=votre_secret_jwt_super_securise_changez_moi_absolument
       - JWT_EXPIRES_IN=30d
-      # Twilio Configuration (remplacez par vos vraies clés)
-      - TWILIO_ACCOUNT_SID=AC81de4ea28dd02059dcc24feebb01eb45
-      - TWILIO_AUTH_TOKEN=e8524b2a90e42836db3c1ccc6decb072
-      - TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-      # Email Configuration (remplacez par vos vraies données Gmail)
-      - EMAIL_USER=votre.email@gmail.com
-      - EMAIL_PASS=votre_mot_de_passe_application_gmail
+      # Twilio Configuration (utiliser .env pour les vraies valeurs)
+      - TWILIO_ACCOUNT_SID=${TWILIO_ACCOUNT_SID}
+      - TWILIO_AUTH_TOKEN=${TWILIO_AUTH_TOKEN}
+      - TWILIO_WHATSAPP_FROM=${TWILIO_WHATSAPP_FROM}
+      # Email Configuration (utiliser .env pour les vraies valeurs)
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASS=${EMAIL_PASS}
     volumes:
       - ./backend:/usr/src/app
       - /usr/src/app/node_modules
