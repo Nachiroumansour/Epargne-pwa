@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: calebasse-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=adminpassword
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: calebasse-backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+    environment:
+      - NODE_ENV=development
+      - PORT=5000
+      - MONGODB_URI=mongodb://admin:adminpassword@mongodb:27017/calebasse?authSource=admin
+      # JWT Configuration
+      - JWT_SECRET=votre_secret_jwt_super_securise_changez_moi_absolument
+      - JWT_EXPIRES_IN=30d
+      # Twilio Configuration (remplacez par vos vraies clés)
+      - TWILIO_ACCOUNT_SID=AC81de4ea28dd02059dcc24feebb01eb45
+      - TWILIO_AUTH_TOKEN=e8524b2a90e42836db3c1ccc6decb072
+      - TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
+      # Email Configuration (remplacez par vos vraies données Gmail)
+      - EMAIL_USER=votre.email@gmail.com
+      - EMAIL_PASS=votre_mot_de_passe_application_gmail
+    volumes:
+      - ./backend:/usr/src/app
+      - /usr/src/app/node_modules
+
+volumes:
+  mongodb_data:
+    name: calebasse-mongodb-data

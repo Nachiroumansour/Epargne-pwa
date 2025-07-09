@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calebasse - Mode Hors Ligne</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .offline-container {
+            text-align: center;
+            max-width: 400px;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .icon {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .features {
+            margin: 2rem 0;
+            text-align: left;
+        }
+        
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .feature-icon {
+            margin-right: 0.75rem;
+            font-size: 1.2rem;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        button {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .primary-btn {
+            background: white;
+            color: #1e40af;
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .secondary-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+        
+        .status-online {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .status-offline {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        @media (max-width: 480px) {
+            .offline-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="icon">📱</div>
+        <h1>Mode Hors Ligne</h1>
+        <p>Vous êtes actuellement déconnecté d'Internet, mais vous pouvez continuer à utiliser certaines fonctionnalités.</p>
+        
+        <div class="features">
+            <div class="feature">
+                <span class="feature-icon">💰</span>
+                <span>Consultation de vos dernières cotisations</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">💳</span>
+                <span>Visualisation de vos crédits actifs</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">📊</span>
+                <span>Accès aux statistiques mises en cache</span>
+            </div>
+            <div class="feature">
+                <span class="feature-icon">👤</span>
+                <span>Consultation de votre profil</span>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="primary-btn" onclick="checkConnection()">
+                Vérifier la connexion
+            </button>
+            <button class="secondary-btn" onclick="goHome()">
+                Accueil
+            </button>
+        </div>
+        
+        <div class="status" id="status">
+            <span id="status-text">Vérification de la connexion...</span>
+        </div>
+    </div>
+
+    <script>
+        // Vérifie l'état de la connexion
+        function updateConnectionStatus() {
+            const status = document.getElementById('status');
+            const statusText = document.getElementById('status-text');
+            
+            if (navigator.onLine) {
+                status.className = 'status status-online';
+                statusText.textContent = '✅ Connexion rétablie ! Vous pouvez recharger la page.';
+                
+                // Auto-rechargement après connexion rétablie
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000);
+            } else {
+                status.className = 'status status-offline';
+                statusText.textContent = '❌ Aucune connexion Internet détectée.';
+            }
+        }
+        
+        function checkConnection() {
+            updateConnectionStatus();
+            
+            // Essaie de faire une requête pour vérifier la connectivité réelle
+            fetch('/api/health', { 
+                method: 'GET',
+                cache: 'no-cache'
+            })
+            .then(response => {
+                if (response.ok) {
+                    window.location.reload();
+                }
+            })
+            .catch(() => {
+                updateConnectionStatus();
+            });
+        }
+        
+        function goHome() {
+            window.location.href = '/';
+        }
+        
+        // Écoute les changements de connexion
+        window.addEventListener('online', updateConnectionStatus);
+        window.addEventListener('offline', updateConnectionStatus);
+        
+        // Vérifie la connexion au chargement
+        updateConnectionStatus();
+        
+        // Vérification périodique
+        setInterval(checkConnection, 30000); // Toutes les 30 secondes
+    </script>
+</body>
+</html> 
