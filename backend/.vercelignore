@@ -1,0 +1,5 @@
+# Ignore client-side api folders that might be confused with serverless functions
+../frontend/src/api
+../Xalisse/src/api
+node_modules
+.DS_Store 
